@@ -139,7 +139,7 @@ end
 --- get current branch name
 ---@return string?
 function M.branch()
-  ops.git_branch()
+  return ops.git_branch()
 end
 
 --- open manage sessions popup

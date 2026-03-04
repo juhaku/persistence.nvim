@@ -25,7 +25,7 @@ local function to_session_files(sessions)
   return files
 end
 
----@param parent_opts Persitence.Popup.CloseCallbackOpts
+---@param parent_opts Persistence.Popup.CloseCallbackOpts
 ---@param entries string[]
 ---@param current_win integer
 ---@param cursor_pos integer[]
@@ -124,18 +124,16 @@ local function open_popup(ns, entries, current_win, cursor_pos)
     win = Config.options.manage.list,
     prepare = function(o)
       for i, line in ipairs(entries) do
-        local branch_icon_index = line:find("()")
+        local branch_icon_index = line:find("(" .. ops.branch_icon .. ")")
         if branch_icon_index ~= nil then
           local len = line:len()
-          if branch_icon_index ~= nil then
-            vim.api.nvim_buf_set_extmark(
-              o.buf,
-              o.ns,
-              i - 1,
-              branch_icon_index - 1,
-              { hl_group = Config.options.manage.highlight.neutral, end_col = len }
-            )
-          end
+          vim.api.nvim_buf_set_extmark(
+            o.buf,
+            o.ns,
+            i - 1,
+            branch_icon_index - 1,
+            { hl_group = Config.options.manage.highlight.neutral, end_col = len }
+          )
         end
       end
     end,

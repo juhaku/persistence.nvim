@@ -1,34 +1,34 @@
 local M = {}
 
----@type {[integer]: Persitence.Popup}
+---@type {[integer]: Persistence.Popup}
 local state = {}
 
 local Popup = {}
 
----@class Persitence.Popup.CloseCallbackOpts
+---@class Persistence.Popup.CloseCallbackOpts
 ---@field buf integer
 ---@field ns number
 ---@field cascade boolean
 ---@field close fun()
 
----@class Persitence.Popup.Opts
+---@class Persistence.Popup.Opts
 ---@field win Persistence.WinOpts
 ---@field scratch boolean
 ---@field ns integer namespace
 ---@field content string[]
 ---@field keymaps {[string]: Persistence.KeyMap}
----@field close_callback nil|fun(x:Persitence.Popup.CloseCallbackOpts)
+---@field close_callback nil|fun(x:Persistence.Popup.CloseCallbackOpts)
 ---@field prepare nil|fun(o:{buf: integer, ns: integer})
 ---@field after_win_create nil|fun(opts:{buf: integer, ns: number, win: integer})
 
----@class Persitence.Popup
+---@class Persistence.Popup
 ---@field win integer
 ---@field buf integer
----@field opts Opts
+---@field opts Persistence.Popup.Opts
 
 ---Open a simple popup window
----@param opts Persitence.Popup.Opts
----@return Persitence.Popup
+---@param opts Persistence.Popup.Opts
+---@return Persistence.Popup
 function Popup.open(opts)
   local buf = vim.api.nvim_create_buf(false, opts.scratch)
 
@@ -67,7 +67,7 @@ function Popup.open(opts)
   }
 end
 
----@param popup Persitence.Popup
+---@param popup Persistence.Popup
 ---@param opts {cascade: boolean}
 function Popup.close(popup, opts)
   if popup.opts.close_callback ~= nil then
@@ -93,7 +93,7 @@ function Popup.close(popup, opts)
 end
 
 ---Open a popup according to the given options.
----@param opts Persitence.Popup.Opts
+---@param opts Persistence.Popup.Opts
 ---@return integer buf buffer number of the popup
 function M.open(opts)
   local p = Popup.open(opts)
@@ -104,10 +104,11 @@ end
 
 --- Closes the popup for given buffer number according to the configured
 --- `close_callback`.
----@param buf integer buffer number of the poopup
+---@param buf integer buffer number of the popup
 ---@param opts nil|{cascade: boolean?}
 function M.close(buf, opts)
   local popup = state[buf]
+  state[buf] = nil
   Popup.close(popup, vim.tbl_deep_extend("force", { cascade = true }, opts or {}))
 end
 
